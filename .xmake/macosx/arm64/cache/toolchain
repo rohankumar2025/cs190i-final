@@ -1,0 +1,52 @@
+{
+    tool_platform_macosx_arm64_cc = {
+        toolchain_info = {
+            name = "xcode",
+            plat = "macosx",
+            arch = "arm64",
+            cachekey = "xcode_arch_arm64_plat_macosx"
+        },
+        toolname = "clang",
+        program = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
+    },
+    ["tool_target_assignment-4_macosx_arm64_cxx"] = {
+        toolchain_info = {
+            name = "xcode",
+            plat = "macosx",
+            arch = "arm64",
+            cachekey = "xcode_arch_arm64_plat_macosx"
+        },
+        toolname = "clang",
+        program = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
+    },
+    tool_platform_macosx_arm64_cxx = {
+        toolchain_info = {
+            name = "xcode",
+            plat = "macosx",
+            arch = "arm64",
+            cachekey = "xcode_arch_arm64_plat_macosx"
+        },
+        toolname = "clang",
+        program = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
+    },
+    xcode_arch_arm64_plat_macosx = {
+        __global = true,
+        xcode_sdkver = "13.3",
+        xcode = "/Applications/Xcode.app",
+        plat = "macosx",
+        arch = "arm64",
+        target_minver = "13.2",
+        bindir = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin",
+        xcode_sysroot = "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk"
+    },
+    ["tool_target_assignment-4_macosx_arm64_ld"] = {
+        toolchain_info = {
+            name = "xcode",
+            plat = "macosx",
+            arch = "arm64",
+            cachekey = "xcode_arch_arm64_plat_macosx"
+        },
+        program = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++",
+        toolname = "clangxx"
+    }
+}

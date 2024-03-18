@@ -1,0 +1,9 @@
+{
+    packages = {
+        "/Users/rohankumar/.xmake/packages/s/spdlog/v1.13.0/ecca98d574b64b4ca0e391f301c3b293",
+        "/Users/rohankumar/.xmake/packages/s/stb/2023.01.30/baa2aa3b50fd4294ba547a6c032c19ef",
+        "/Users/rohankumar/.xmake/packages/l/linalg/v2.2/e58d89a1e9d448ca97233edda2f54d60",
+        "/Users/rohankumar/.xmake/packages/o/openmp/latest/1ed73f9a6bd44844bebf0bd2875ee2ac",
+        "/Users/rohankumar/.xmake/packages/t/tinyobjloader/v2.0.0rc13/138a7615eaf84e4f8c421e1d6ebdb490"
+    }
+}

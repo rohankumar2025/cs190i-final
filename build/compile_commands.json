@@ -1,0 +1,6 @@
+[
+{
+  "directory": "/Users/rohankumar/Desktop/cs190i/refraction",
+  "arguments": ["/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang", "-c", "-Qunused-arguments", "-target", "arm64-apple-macos13.2", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk", "-fvisibility=hidden", "-fvisibility-inlines-hidden", "-Wall", "-O3", "-std=c++20", "-Isrc/muni", "-I", "/opt/homebrew/Cellar/libomp/18.1.1/include", "-I", "/Users/rohankumar/.xmake/packages/s/spdlog/v1.13.0/ecca98d574b64b4ca0e391f301c3b293/include", "-I", "/Users/rohankumar/.xmake/packages/s/stb/2023.01.30/baa2aa3b50fd4294ba547a6c032c19ef/include", "-I", "/Users/rohankumar/.xmake/packages/s/stb/2023.01.30/baa2aa3b50fd4294ba547a6c032c19ef/include/stb", "-I", "/Users/rohankumar/.xmake/packages/l/linalg/v2.2/e58d89a1e9d448ca97233edda2f54d60/include", "-I", "/Users/rohankumar/.xmake/packages/t/tinyobjloader/v2.0.0rc13/138a7615eaf84e4f8c421e1d6ebdb490/include", "-Xpreprocessor", "-fopenmp", "-DNDEBUG", "-o", "build/.objs/assignment-4/macosx/arm64/release/src/assignment-4.cpp.o", "src/assignment-4.cpp"],
+  "file": "src/assignment-4.cpp"
+}]
