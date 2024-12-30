@@ -84,18 +84,12 @@ Vec3f shade_with_light_sampling(Triangle tri, Vec3f p, Vec3f wo) {
 
     if (is_emitter(nearest_tri1)) {
         Vec3f Li = eval_area_light(-wi1);
-        float cos = dot(normalize(tri.face_normal), wi1);
+        float cos = std::max(0.0f, dot(normalize(tri.face_normal), wi1));
         float cos_prime = std::max(dot(-wi1, normalize(light_normal)), 0.0f);
         
         if (tri_contains_lambertian) {
-            cos = std::max(0.0f, cos);
             Vec3f fr = get<Lambertian>(BoxScene::materials[tri.material_id]).eval();
             L_dir = Li * fr * cos / (pdf_light * dist_to_light_squared / cos_prime);
-        } else {
-            // cos = abs(cos);
-            // float fr = get<Dielectric>(BoxScene::materials[tri.material_id]).eval(wo, wi1, tri.face_normal);
-            // // spdlog::info("Light sampling: {}", fr);
-            // L_dir = Li * fr * cos / (pdf_light * dist_to_light_squared / cos_prime);
         }
         
     }
@@ -122,7 +116,7 @@ Vec3f shade_with_light_sampling(Triangle tri, Vec3f p, Vec3f wo) {
         const auto [wi2, pdf_wi] = material.sample(wo, tri.face_normal, UniformSampler::next3d());
         const auto [hit2, t2, nearest_tri2] = RayTracer::closest_hit(p, wi2, octree, BoxScene::triangles);
 
-        float fr = 1.0f; //material.eval(wo, wi2, tri.face_normal);
+        float fr = material.eval(wo, wi2, tri.face_normal);
 
         if (hit2 && !is_emitter(nearest_tri2) && pdf_wi > 0.0f) {
             float cos = abs(dot(normalize(tri.face_normal), normalize(wi2)));
@@ -147,97 +141,6 @@ Vec3f path_tracing_with_light_sampling(Vec3f ray_pos, Vec3f ray_dir) {
     return shade_with_light_sampling(nearest_tri, hit_position, -ray_dir);
 }
 
-Vec3f shade_with_MIS(Triangle tri, Vec3f p, Vec3f wo) {
-    Vec3f L_dir{0.0f}, L_ind{0.0f};
-
-    // // Contribution from the light source
-    // const auto [light_pos, light_normal, pdf_light] = sample_area_light(UniformSampler::next2d());
-    // Vec3f wi1 = light_pos - p;
-    // float dist_to_light_squared = normSquared(wi1);
-    // wi1 = normalize(wi1);
-    // const auto [hit1, t1, nearest_tri1] = RayTracer::closest_hit(p, wi1, octree, BoxScene::triangles);
-
-    // bool tri_contains_lambertian = std::holds_alternative<Lambertian>(BoxScene::materials[tri.material_id]);
-    // Vec3f fr = tri_contains_lambertian 
-    //     ? std::get<Lambertian>(BoxScene::materials[tri.material_id]).eval() 
-    //     : std::get<Microfacet>(BoxScene::materials[tri.material_id]).eval(wo, wi1, tri.face_normal);
-
-    // float p_direct = 0.0f;
-
-    // if (is_emitter(nearest_tri1)) {
-    //     Vec3f Li = eval_area_light(-wi1);
-    //     float cos = std::max(dot(normalize(tri.face_normal), wi1), 0.0f);
-    //     float cos_prime = std::max(dot(-wi1, normalize(light_normal)), 0.0f);
-    //     p_direct = pdf_light;
-    //     L_dir = Li * fr * cos / (pdf_light * dist_to_light_squared / cos_prime);
-    // }
-
-    // const float p_rr = 0.8f;
-
-    // if (tri_contains_lambertian) {
-    //     Lambertian material = std::get<Lambertian>(BoxScene::materials[tri.material_id]);
-    //     const auto [wi2, pdf_wi] = material.sample(tri.face_normal, UniformSampler::next2d());
-    //     const auto [hit2, t2, nearest_tri2] = RayTracer::closest_hit(p, wi2, octree, BoxScene::triangles);
-
-    //     fr = material.eval();
-
-    //     if (!hit2) return L_dir;
-
-    //     if (is_emitter(nearest_tri2)) {
-    //         Vec3f Li = eval_area_light(-wi2);
-    //         float cos = std::max(dot(normalize(tri.face_normal), wi2), 0.0f);
-
-    //         L_dir *= p_direct / (p_direct + pdf_wi);
-    //         float weight = pdf_wi / (p_direct + pdf_wi);
-    //         L_dir += Li * fr * cos / pdf_wi * weight;
-    //     } else {
-    //         if (UniformSampler::next1d() > p_rr) return L_dir;
-
-    //         float cos = std::max(dot(normalize(tri.face_normal), normalize(wi2)), 0.0f);
-    //         Vec3f q = offset_ray_origin(p + normalize(wi2) * t2, nearest_tri2.face_normal);
-
-    //         L_ind = shade_with_MIS(nearest_tri2, q, -wi2) * fr * cos / p_rr / pdf_wi;
-    //     }
-    // } else {
-    //     Microfacet material = std::get<Microfacet>(BoxScene::materials[tri.material_id]);
-    //     const auto [wi2, pdf_wi] = material.sample(wo, tri.face_normal, UniformSampler::next2d());
-    //     const auto [hit2, t2, nearest_tri2] = RayTracer::closest_hit(p, wi2, octree, BoxScene::triangles);
-
-    //     fr = material.eval(wo, wi2, tri.face_normal);
-
-    //     if (!hit2) return L_dir;
-
-    //     if (is_emitter(nearest_tri2)) {
-    //         Vec3f Li = eval_area_light(-wi2);
-    //         float cos = std::max(dot(normalize(tri.face_normal), wi2), 0.0f);
-
-    //         L_dir *= p_direct / (p_direct + pdf_wi);
-    //         float weight = pdf_wi / (p_direct + pdf_wi);
-    //         L_dir += Li * fr * cos / pdf_wi * weight;
-    //     } else {
-    //         if (UniformSampler::next1d() > p_rr) return L_dir;
-
-    //         float cos = std::max(dot(normalize(tri.face_normal), normalize(wi2)), 0.0f);
-    //         Vec3f q = offset_ray_origin(p + normalize(wi2) * t2, nearest_tri2.face_normal);
-
-    //         L_ind = shade_with_MIS(nearest_tri2, q, -wi2) * fr * cos / p_rr / pdf_wi;
-    //         // spdlog::info("Microfacet: {}", L_dir);
-    //     }
-    // }
-
-    return L_dir + L_ind;
-}
-
-Vec3f path_tracing_with_MIS(Vec3f ray_pos, Vec3f ray_dir) {
-    const auto [is_ray_hit, t_min, nearest_tri] =
-        RayTracer::closest_hit(ray_pos, ray_dir, octree, BoxScene::triangles);
-    if (!is_ray_hit) return Vec3f{0.0f};
-    const Vec3f hit_position = ray_pos + t_min * ray_dir;
-    if (is_emitter(nearest_tri)) return eval_area_light(-ray_dir);
-
-    return shade_with_MIS(nearest_tri, hit_position, -ray_dir);
-}
-
 // Define the function to be executed in each thread
 void renderRow(int row, int max_spp, const Camera& camera, Image& image) {
     for (int x = 0; x < image.width; x++) {
@@ -255,24 +158,6 @@ void renderRow(int row, int max_spp, const Camera& camera, Image& image) {
         spdlog::info("Finished row {}", row);
 }
 
-void renderRowWithMIS(int row, int max_spp, const Camera& camera, Image& image) {
-    for (int x = 0; x < image.width; x++) {
-        image(x, row) = Vec3f{0.0f};
-        for (int sample = 0; sample < max_spp; sample++) {
-            const float u = (x + UniformSampler::next1d()) / image.width;
-            const float v = (row + UniformSampler::next1d()) / image.height;
-            Vec3f ray_direction = camera.generate_ray(u, (1.0f - v));
-            image(x, row) +=
-                clamp(path_tracing_with_MIS(camera.position, ray_direction),
-                    Vec3f(0.0f), Vec3f(50.0f));
-        }
-        image(x, row) /= (float)max_spp;
-    }
-
-    if (row % 25 == 0)
-        spdlog::info("Finished row {}", row);
-}
-
 int main(int argc, char **argv) {
 
 
@@ -281,8 +166,8 @@ int main(int argc, char **argv) {
                  "Welcome to CS 190I Assignment 4: Microfacet Materials\n"
                  "----------------------------------------------");
     // const unsigned int max_spp = 64;
-    const unsigned int image_width = 540;
-    const unsigned int image_height = 540;
+    const unsigned int image_width = 1080;
+    const unsigned int image_height = 1080;
     // Some prepereations
     Image image{.width = image_width,
                 .height = image_height,
@@ -321,7 +206,7 @@ int main(int argc, char **argv) {
 
     // =============================================================================================
     // Path Tracing with light sampling
-    std::vector<int> max_spps{32};
+    std::vector<int> max_spps{512};
     for (int max_spp : max_spps) {
         spdlog::info("Path Tracing with light sampling: rendering started!");
         threads.clear();
@@ -333,19 +218,6 @@ int main(int argc, char **argv) {
 
         spdlog::info("Path Tracing with light sampling: Rendering finished!");
         image.save_with_tonemapping("./path_tracing_with_light_sampling" + std::to_string(max_spp) + ".png");
-
-
-        // =============================================================================================
-        // Path Tracing with MIS
-        // spdlog::info("Path Tracing with MIS: Rendering started!");
-        // threads.clear();
-        // for (int y = 0; y < image.height; y++)
-        //     threads.emplace_back(renderRowWithMIS, y, max_spp, std::ref(camera), std::ref(image));
-
-        // for (auto& thread : threads)
-        //     thread.join();
-        // spdlog::info("Path Tracing with MIS: Rendering finished!");
-        // image.save_with_tonemapping("./path_tracing_with_MIS" + std::to_string(max_spp) + ".png");
     }
 
     // =============================================================================================

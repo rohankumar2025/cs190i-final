@@ -52,138 +52,6 @@ struct Lambertian {
 
 };
 
-struct Microfacet {
-    const Vec3f LOCAL_N{0.0f, 0.0f, 1.0f};
-    float roughness;
-    // refraction indices for RGB channels
-    Vec3f n1;
-    Vec3f n2;
-
-    /** Computes the Fresnel term for the microfacet material.
-      \param[in] wi The light incident direction in local space.
-      \return The Fresnel term.
-    */
-    Vec3f F(Vec3f wi) const {
-      Vec3f R0 = {pow((n1.x-n2.x) / (n1.x+n2.x), 2), pow((n1.y-n2.y) / (n1.y+n2.y), 2), pow((n1.z-n2.z) / (n1.z+n2.z), 2)};
-      float cos_theta = dot(normalize(wi), LOCAL_N);
-      Vec3f one_minus_R0 = Vec3f{1.0f} - R0;
-      float one_minus_cos_theta_to_fifth = pow(1.0f - cos_theta, 5);
-      Vec3f res = R0 + one_minus_cos_theta_to_fifth * one_minus_R0;
-      return res;
-    }
-    /** Computes the Beckmann normal distribution function for the microfacet material.
-      \param[in] h The half vector in local space.
-      \return The normal distribution function.
-    */
-    float D(Vec3f h) const {
-      float cos_theta_h = dot(h, LOCAL_N);
-      float cos_theta_h_squared = cos_theta_h * cos_theta_h;
-      float alpha_squared = pow(roughness, 2);
-      float tan_theta_h_squared = (1.0f - cos_theta_h_squared) / cos_theta_h_squared;
-
-      float exponent = -tan_theta_h_squared / alpha_squared;
-      float denominator = PI * alpha_squared * cos_theta_h_squared * cos_theta_h_squared;
-
-      return pow(EXP, exponent) / denominator;
-    }
-
-
-    /** Computes the shadowing-masking function for the microfacet material.
-      \param[in] wo The outgoing direction in local space.
-      \param[in] wi The light incident direction in local space.
-      \return The shadowing-masking value.
-    */
-    float G(Vec3f wo, Vec3f wi) const {
-        return G1(wo) * G1(wi);
-    }
-
-    float G1(Vec3f w) const {
-      float cos_theta = dot(normalize(w), LOCAL_N);
-      float tan_theta = sqrt(1 - cos_theta * cos_theta)/ cos_theta;
-      float alpha = roughness;
-
-      float a = 1 / (roughness * tan_theta);
-      float lambda = (a < 1.6f) ? (1.0f - 1.259f * a + 0.396f * a * a) / (3.535f * a + 2.181 * a * a) : 0.0f;
-      return 1 / (1 + lambda);
-    }
-
-    /** Evaluates the BRDF for the microfacet material.
-      \param[in] wo_world The outgoing direction in world space.
-      \param[in] wi_world The light incident direction in world space.
-      \param[in] normal The normal of the surface.
-      \return The BRDF (fr) value.
-    */
-    Vec3f eval(Vec3f wo_world, Vec3f wi_world, Vec3f normal) const {
-      wo_world = normalize(wo_world);
-      wi_world = normalize(wi_world);
-      normal = normalize(normal);
-      
-      Vec3f wo = to_local(wo_world, normal);
-      Vec3f wi = to_local(wi_world, normal);
-      Vec3f h = normalize(0.5f * (wi + wo));
-
-      Vec3f res = F(wi) * G(wo, wi) * D(h) / (4 * dot(normal, wo_world) * dot(normal, wi_world));
-
-      // float theta = acos(dot(normal, h)) * 180 / PI;
-      // spdlog::info("eval called with theta: {}", theta);
-      // spdlog::info("F: {}, G: {}, D: {}, cos_theta_h: {}, res: {}", F(wi), G(wo, wi), D(h), dot(h, LOCAL_N), res);
-      return res;
-    }
-    /** Computes the PDF for the microfacet material.
-      \param[in] wo The outgoing direction in world space.
-      \param[in] wi The light incident direction in world space.
-      \param[in] normal The normal of the surface.
-      \return The PDF value.
-    */
-    float pdf(Vec3f wo_world, Vec3f wi_world, Vec3f normal) const {
-      normal = normalize(normal);
-      Vec3f wh_world = normalize(0.5f * (wo_world + wi_world));
-
-      float cos_theta_h = dot(wh_world, normal);
-      float sin_theta_h = sqrt(1 - cos_theta_h * cos_theta_h);
-      float tan_theta_h = sin_theta_h / cos_theta_h;
-      float alpha_squared = pow(roughness, 2);
-
-      float pdf_theta = 2.0f * sin_theta_h / (alpha_squared * pow(cos_theta_h, 3)) * pow(EXP, (-pow(tan_theta_h, 2) / alpha_squared));
-      spdlog::info(pdf_theta / (2.0f * PI * sin_theta_h));
-      return pdf_theta / (2.0f * PI * sin_theta_h);
-    }
-
-    /** Samples the BRDF for the microfacet material.
-      \param[in] wo_world The outgoing direction in world space.
-      \param[in] normal The normal of the surface.
-      \param[in] u A random number in (0,1)^2.
-      \return A tuple containing the sampled direction in world space and the PDF.
-    */
-    std::tuple<Vec3f, float>  sample(Vec3f wo_world, Vec3f normal, Vec2f u) const {
-      float phi_h = 2.0f * PI * u[0];
-      float pdf_phi = 1 / (2.0f * PI);
-      float alpha_squared = pow(roughness, 2);
-
-      float theta_h = atan(sqrt(-alpha_squared * log(1.0f - u[1])));
-      float tan_theta_h = tan(theta_h), cos_theta_h = cos(theta_h), sin_theta_h = sin(theta_h);
-  
-      float denominator = alpha_squared * cos_theta_h * cos_theta_h * cos_theta_h;
-      float exponent = -tan_theta_h * tan_theta_h / alpha_squared;
-
-      float pdf_theta = 2.0f * sin_theta_h / denominator * pow(EXP, exponent); 
-      //spdlog::info("theta_h: {}, denominator: {}, exp: {}, pdf: {}", theta_h, denominator, exponent, pdf_theta); 
-
-      Vec3f wh_local = {sin(theta_h) * cos(phi_h), sin(theta_h) * sin(phi_h), cos(theta_h)};
-
-      Vec3f wh_world = from_local(wh_local, normal);
-      // spdlog::info("Sampled wh_world: {}, normal: {}", wh_world, normal);
-
-      Vec3f wi_world = mirror_reflect(-wo_world, wh_world);
-      
-      // float pdf_theta = pdf(wo_world, wi_world, normal);
-      float pdf_wi = pdf_theta * pdf_phi / (4.0f * sin_theta_h * dot(normalize(wo_world), normalize(wh_world)));
-      // spdlog::info("pdf_wi: {}, pdf_theta: {}, pdf_phi: {}, cos: {}, sin_theta: {}", pdf_wi, pdf_theta, pdf_phi, dot(normalize(-wo_world), normalize(wh_world)), sin_theta_h);
-
-      return {normalize(wi_world), pdf_wi};
-    }
-
-};
 
 struct Dielectric {
   float eta, roughness;
@@ -238,6 +106,10 @@ struct Dielectric {
     return 2.0f / (1.0f + sqrt(1.0f + root * root));
   }
 
+  float pdf(Vec3f h) const {
+    return D(h) * h.z;
+  }
+
   float eval(Vec3f wo_world, Vec3f wi_world, Vec3f n) const {
     Vec3f wo = normalize(to_local(wo_world, n)), wi = normalize(to_local(wi_world, n));
     bool reflect = (wi.z * wo.z) > 0.0f;
@@ -246,15 +118,19 @@ struct Dielectric {
     float etaI = (wo.z < 0.0f) ? eta : 1.0f;
 
     float reflect_coeff = (wi.z > 0.0f) ? 1.0f : -1.0f;
-    Vec3f h = (reflect) ? normalize(wi + wo) * reflect_coeff : -normalize(wo * etaI + wi * etaT);
+    Vec3f h = (reflect) ? normalize(wi + wo) * reflect_coeff : normalize(wi * etaI + wo * etaT);
+
+    if (wo.z < 0.0f) wo *= -1.0f;
+    if (wi.z < 0.0f) wi *= -1.0f;
 
     float Dr = D(h);
-    float Fr = Fresnel(dot(wo, h));
+    float Fr = Fresnel(dot(wi, h));
     float Gr = G(wo, wi, h);
 
     if (reflect) {
       float res = Fr * Dr * Gr / (4.0f * wi.z * wo.z);
       // spdlog::info("h: {}, Fr: {}, Dr: {}, Gr: {}, eval: {}", h, Fr, Dr, Gr, res);
+      return res;
     }
 
     float sqrt_denom = etaI * dot(wi, h) + etaT * dot(wo, h);
@@ -269,7 +145,7 @@ struct Dielectric {
     float phiM = 2 * PI * u.y;
 
     Vec3f m = normalize(Vec3f{sin(thetaM) * sin(phiM), sin(thetaM) * cos(phiM), cos(thetaM)});
-    float pdf_m = D(m) * m.z;
+    float pdf_m = pdf(m);
 
     return {m, pdf_m};
   }

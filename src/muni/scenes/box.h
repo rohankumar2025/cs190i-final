@@ -16,9 +16,7 @@ static const Vec3f light_color{50.0f, 50.0f, 50.0f};
 static const Vec3f light_normal{0.0f, 0.0f, -1.0f};
 
 // Microfacet materials
-const Dielectric Glass{.eta = 1.5f, .roughness = 1.25f};
-const Microfacet Gold{.roughness = 0.0005f, .n1 = Vec3f{1.0f}, .n2 =Vec3f{0.2177f, 0.42659f,1.2425f } };
-const Microfacet Iron{.roughness = 0.02f, .n1 = Vec3f{1.0f}, .n2 =Vec3f{2.8851f, 2.95f,2.6f } };
+const Dielectric Glass{.eta = 1.5f, .roughness = 0.25f};
 static const std::array<std::variant<Lambertian, Dielectric>, 7> materials = {
     // Back
     Lambertian{.albedo = Vec3f{0.0f, 1.0f, 0.0f}},  //Vec3f{0.874000013f, 0.874000013f, 0.875000000f}},

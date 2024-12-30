@@ -1,64 +1,86 @@
 {
-    linalg = {
-        license = "Unlicense license",
-        __requirestr = "linalg 2.2",
-        envs = {
-            DYLD_LIBRARY_PATH = {
-                "/Users/rohankumar/.xmake/packages/l/linalg/v2.2/e58d89a1e9d448ca97233edda2f54d60/lib"
-            },
-            LD_LIBRARY_PATH = {
-                "/Users/rohankumar/.xmake/packages/l/linalg/v2.2/e58d89a1e9d448ca97233edda2f54d60/lib"
-            }
-        },
-        version = "v2.2",
-        __enabled = true,
-        installdir = "/Users/rohankumar/.xmake/packages/l/linalg/v2.2/e58d89a1e9d448ca97233edda2f54d60",
-        sysincludedirs = "/Users/rohankumar/.xmake/packages/l/linalg/v2.2/e58d89a1e9d448ca97233edda2f54d60/include"
-    },
-    stb = {
-        __requirestr = "stb 2023.01.30",
-        envs = {
-            DYLD_LIBRARY_PATH = {
-                "/Users/rohankumar/.xmake/packages/s/stb/2023.01.30/baa2aa3b50fd4294ba547a6c032c19ef/lib"
-            },
-            LD_LIBRARY_PATH = {
-                "/Users/rohankumar/.xmake/packages/s/stb/2023.01.30/baa2aa3b50fd4294ba547a6c032c19ef/lib"
-            }
-        },
-        __enabled = true,
-        version = "2023.01.30",
-        installdir = "/Users/rohankumar/.xmake/packages/s/stb/2023.01.30/baa2aa3b50fd4294ba547a6c032c19ef",
-        sysincludedirs = {
-            "/Users/rohankumar/.xmake/packages/s/stb/2023.01.30/baa2aa3b50fd4294ba547a6c032c19ef/include",
-            "/Users/rohankumar/.xmake/packages/s/stb/2023.01.30/baa2aa3b50fd4294ba547a6c032c19ef/include/stb"
-        }
-    },
     spdlog = {
-        license = "MIT",
-        __requirestr = "spdlog 1.13.0",
         envs = {
-            DYLD_LIBRARY_PATH = {
+            LD_LIBRARY_PATH = {
                 "/Users/rohankumar/.xmake/packages/s/spdlog/v1.13.0/ecca98d574b64b4ca0e391f301c3b293/lib"
             },
-            LD_LIBRARY_PATH = {
+            DYLD_LIBRARY_PATH = {
                 "/Users/rohankumar/.xmake/packages/s/spdlog/v1.13.0/ecca98d574b64b4ca0e391f301c3b293/lib"
             }
         },
+        __requirestr = "spdlog 1.13.0",
+        sysincludedirs = "/Users/rohankumar/.xmake/packages/s/spdlog/v1.13.0/ecca98d574b64b4ca0e391f301c3b293/include",
         version = "v1.13.0",
         __enabled = true,
         installdir = "/Users/rohankumar/.xmake/packages/s/spdlog/v1.13.0/ecca98d574b64b4ca0e391f301c3b293",
-        sysincludedirs = "/Users/rohankumar/.xmake/packages/s/spdlog/v1.13.0/ecca98d574b64b4ca0e391f301c3b293/include"
+        license = "MIT"
+    },
+    stb = {
+        __requirestr = "stb 2023.01.30",
+        sysincludedirs = {
+            "/Users/rohankumar/.xmake/packages/s/stb/2023.01.30/baa2aa3b50fd4294ba547a6c032c19ef/include",
+            "/Users/rohankumar/.xmake/packages/s/stb/2023.01.30/baa2aa3b50fd4294ba547a6c032c19ef/include/stb"
+        },
+        envs = {
+            LD_LIBRARY_PATH = {
+                "/Users/rohankumar/.xmake/packages/s/stb/2023.01.30/baa2aa3b50fd4294ba547a6c032c19ef/lib"
+            },
+            DYLD_LIBRARY_PATH = {
+                "/Users/rohankumar/.xmake/packages/s/stb/2023.01.30/baa2aa3b50fd4294ba547a6c032c19ef/lib"
+            }
+        },
+        version = "2023.01.30",
+        installdir = "/Users/rohankumar/.xmake/packages/s/stb/2023.01.30/baa2aa3b50fd4294ba547a6c032c19ef",
+        __enabled = true
+    },
+    tinyobjloader = {
+        static = true,
+        sysincludedirs = "/Users/rohankumar/.xmake/packages/t/tinyobjloader/v2.0.0rc13/138a7615eaf84e4f8c421e1d6ebdb490/include",
+        links = "tinyobjloader",
+        __enabled = true,
+        linkdirs = "/Users/rohankumar/.xmake/packages/t/tinyobjloader/v2.0.0rc13/138a7615eaf84e4f8c421e1d6ebdb490/lib",
+        __requirestr = "tinyobjloader v2.0.0rc13",
+        libfiles = "/Users/rohankumar/.xmake/packages/t/tinyobjloader/v2.0.0rc13/138a7615eaf84e4f8c421e1d6ebdb490/lib/libtinyobjloader.a",
+        license = "MIT",
+        version = "v2.0.0rc13",
+        installdir = "/Users/rohankumar/.xmake/packages/t/tinyobjloader/v2.0.0rc13/138a7615eaf84e4f8c421e1d6ebdb490",
+        envs = {
+            LD_LIBRARY_PATH = {
+                "/Users/rohankumar/.xmake/packages/t/tinyobjloader/v2.0.0rc13/138a7615eaf84e4f8c421e1d6ebdb490/lib"
+            },
+            DYLD_LIBRARY_PATH = {
+                "/Users/rohankumar/.xmake/packages/t/tinyobjloader/v2.0.0rc13/138a7615eaf84e4f8c421e1d6ebdb490/lib"
+            }
+        }
+    },
+    linalg = {
+        envs = {
+            LD_LIBRARY_PATH = {
+                "/Users/rohankumar/.xmake/packages/l/linalg/v2.2/e58d89a1e9d448ca97233edda2f54d60/lib"
+            },
+            DYLD_LIBRARY_PATH = {
+                "/Users/rohankumar/.xmake/packages/l/linalg/v2.2/e58d89a1e9d448ca97233edda2f54d60/lib"
+            }
+        },
+        __requirestr = "linalg 2.2",
+        sysincludedirs = "/Users/rohankumar/.xmake/packages/l/linalg/v2.2/e58d89a1e9d448ca97233edda2f54d60/include",
+        version = "v2.2",
+        __enabled = true,
+        installdir = "/Users/rohankumar/.xmake/packages/l/linalg/v2.2/e58d89a1e9d448ca97233edda2f54d60",
+        license = "Unlicense license"
     },
     openmp = {
         cxxflags = "-Xpreprocessor -fopenmp",
-        __requirestr = "openmp",
+        links = "omp",
+        __enabled = true,
+        linkdirs = "/opt/homebrew/Cellar/libomp/18.1.1/lib",
         envs = {
-            DYLD_LIBRARY_PATH = {
+            LD_LIBRARY_PATH = {
                 "/Users/rohankumar/.xmake/packages/o/openmp/latest/1ed73f9a6bd44844bebf0bd2875ee2ac/lib",
                 "/Users/rohankumar/.xmake/packages/c/cmake/3.28.1/db047056aefb493495c7931a097f6cab/lib",
                 "/Users/rohankumar/.xmake/packages/l/libomp/12.0.1/46cbbe63b55d4dfaa4f38e7db3c588c8/lib"
             },
-            LD_LIBRARY_PATH = {
+            DYLD_LIBRARY_PATH = {
                 "/Users/rohankumar/.xmake/packages/o/openmp/latest/1ed73f9a6bd44844bebf0bd2875ee2ac/lib",
                 "/Users/rohankumar/.xmake/packages/c/cmake/3.28.1/db047056aefb493495c7931a097f6cab/lib",
                 "/Users/rohankumar/.xmake/packages/l/libomp/12.0.1/46cbbe63b55d4dfaa4f38e7db3c588c8/lib"
@@ -67,31 +89,9 @@
                 "/Users/rohankumar/.xmake/packages/c/cmake/3.28.1/db047056aefb493495c7931a097f6cab/bin"
             }
         },
+        __requirestr = "openmp",
         cflags = "-Xpreprocessor -fopenmp",
-        __enabled = true,
-        sysincludedirs = "/opt/homebrew/Cellar/libomp/18.1.1/include",
         installdir = "/Users/rohankumar/.xmake/packages/o/openmp/latest/1ed73f9a6bd44844bebf0bd2875ee2ac",
-        links = "omp",
-        linkdirs = "/opt/homebrew/Cellar/libomp/18.1.1/lib"
-    },
-    tinyobjloader = {
-        __requirestr = "tinyobjloader v2.0.0rc13",
-        envs = {
-            DYLD_LIBRARY_PATH = {
-                "/Users/rohankumar/.xmake/packages/t/tinyobjloader/v2.0.0rc13/138a7615eaf84e4f8c421e1d6ebdb490/lib"
-            },
-            LD_LIBRARY_PATH = {
-                "/Users/rohankumar/.xmake/packages/t/tinyobjloader/v2.0.0rc13/138a7615eaf84e4f8c421e1d6ebdb490/lib"
-            }
-        },
-        __enabled = true,
-        libfiles = "/Users/rohankumar/.xmake/packages/t/tinyobjloader/v2.0.0rc13/138a7615eaf84e4f8c421e1d6ebdb490/lib/libtinyobjloader.a",
-        sysincludedirs = "/Users/rohankumar/.xmake/packages/t/tinyobjloader/v2.0.0rc13/138a7615eaf84e4f8c421e1d6ebdb490/include",
-        static = true,
-        installdir = "/Users/rohankumar/.xmake/packages/t/tinyobjloader/v2.0.0rc13/138a7615eaf84e4f8c421e1d6ebdb490",
-        linkdirs = "/Users/rohankumar/.xmake/packages/t/tinyobjloader/v2.0.0rc13/138a7615eaf84e4f8c421e1d6ebdb490/lib",
-        version = "v2.0.0rc13",
-        links = "tinyobjloader",
-        license = "MIT"
+        sysincludedirs = "/opt/homebrew/Cellar/libomp/18.1.1/include"
     }
 }
